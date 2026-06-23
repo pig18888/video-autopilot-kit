@@ -1,5 +1,5 @@
 """
-capcut_helpers.subtitle_corrections — M69 — Hao 影片 AI 字幕通用校正字典 (2026-05-25).
+capcut_helpers.subtitle_corrections — M69 — 教學影片 AI 字幕通用校正字典 (2026-05-25).
 
 CapCut AI 智能字幕在台灣中文混英文 / 專有名詞 / 品牌名常見錯字 — 永遠先跑這個再 Export。
 
@@ -60,22 +60,20 @@ BRAND_CORRECTIONS = {
     "地bug": "Debug",
     "地Bug": "Debug",
 
-    # Brand names
-    "studio": "Studio",       # [22] 我的 studio 網站 (case fix)
-    "STUDIO": "Studio",
+    # Brand names — example: lowercase ASR → your brand casing (replace with your own)
+    "mybrand": "MyBrand",     # brand-name case fix (example)
+    "MYBRAND": "MyBrand",
 
     # 🆕 2026-05-26 English translation 誤判 (AI translate 從中文翻成英文時的常見錯誤)
-    "deductions": "Code",     # 沒寫過 Code → wrote about deductions (#006 v6b 抓到)
+    "deductions": "Code",     # 沒寫過 Code → wrote about deductions ((a past project) v6b 抓到)
     "deduction": "Code",
-    "NetEase": "a domain",    # 買了網域 → bought NetEase (#006 v6b 抓到)
+    "NetEase": "a domain",    # 買了網域 → bought NetEase ((a past project) v6b 抓到)
     "net ease": "a domain",
 
-    # 渲染 (Render mishear)
-    "RN的動畫": "Render 的動畫",  # [中] 3D RN 的動畫 → 3D Render 的動畫
+    # tech-term mishear example (RN → Render)
+    "RN的動畫": "Render 的動畫",  # [中] RN 的動畫 → Render 的動畫
     "RN 的": "Render 的",
     "rn 的": "Render 的",
-    "3D RN ": "3D Render ",      # [英] 3D RN animation → 3D Render animation
-    "3D rn ": "3D Render ",
     "RN animation": "Render animation",
     "RN animations": "Render animations",
 }
@@ -115,7 +113,7 @@ def apply_subtitle_corrections(
         draft: full draft dict (load_draft output)
         extra_corrections: optional dict {wrong: right} for project-specific fixes
         verbose: print every change
-        use_builtin_corrections: True=套用內建作者字典（Hao 用）；False=只用 extra
+        use_builtin_corrections: True=套用內建作者字典（作者自用範例）；False=只用 extra
 
     Returns:
         {'total_fixes': N, 'fixes_per_kind': {brand: N, chinese: N, phrase: N},

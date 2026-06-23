@@ -99,7 +99,7 @@ def force_mix_bgm(
     🚨 2026-05-27 DEPRECATED for教學長片 (M84)
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     這個函數 strip 掉 voiceover 只留 BGM — **不適用人聲教學影片**。
-    #006 試了多次 force_mix_bgm 替換 audio → 全部出 sync drift 因為:
+    (a past project) 試了多次 force_mix_bgm 替換 audio → 全部出 sync drift 因為:
       - -c:v copy 保留 video PTS (CapCut 出來)
       - 但 audio 從 filter graph 重組 (atrim/apad/volume)
       - 兩條 timestamp 軸沒 -shortest 對齊 → 0.1-0.5s drift 累積
@@ -200,8 +200,8 @@ def add_outro_card(
     Args:
         input_mp4: source (must already have force_mix_bgm done)
         output_mp4: destination
-        title_line: 店名 + 分店 (e.g. "長生塩人 淡水店")
-        address_line: 地址 (e.g. "新北市淡水區重建街 206 號")
+        title_line: 店名 + 分店 (e.g. "範例食堂 OO店")
+        address_line: 地址 (e.g. "○○市○○路 123 號")
         extra_line: optional 3rd line（電話 / 營業時間）
         outro_start_sec: negative = N seconds from end (default last 5 sec)
         outro_end_sec: default = video duration
@@ -335,7 +335,7 @@ def detect_voice_end(
     """M82 (2026-05-27): 找人聲真結尾 = 最後一段有聲內容的結束點。
 
     用 ffmpeg silencedetect 掃 silence 區間。若末段是長 silence（b-roll 撐到
-    timeline 末段純靜音，#006 v10 45s 空白尾 bug），回傳該 trailing silence 的
+    timeline 末段純靜音，(a past project) v10 45s 空白尾 bug），回傳該 trailing silence 的
     start（= 人聲真結尾），讓 caller trim 到這。若全程有聲 / 無 trailing silence，
     回傳完整 duration。
 
@@ -396,7 +396,7 @@ def trim_to_voice_end(
     """M82 + M83: trim timeline 到人聲真結尾（+ 可選 outro tail pad），一步出 ship。
 
     timeline 長度由人聲（content）決定，不是讓素材（form）撐到末段純靜音
-    （#006 v10 45s 空白尾 bug）。tail_pad_sec 給 outro card 留尾（例：5-7s）。
+    （(a past project) v10 45s 空白尾 bug）。tail_pad_sec 給 outro card 留尾（例：5-7s）。
 
     player_safe=True（預設）→ 用 M83 保守 profile 重編碼，FINAL ship 一步到位。
     player_safe=False → -c:v copy（快，但切點 snap 到 keyframe，非 final 用）。

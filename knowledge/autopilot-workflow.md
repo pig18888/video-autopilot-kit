@@ -24,7 +24,7 @@
 4. 🎯 **字幕統一中央偏下** y=1280-1400（Shorts）/ y=820-930（長片），不跳位（R19 / M13）
 5. 🎓 **跑完先 self-critique 17 關** — 任一未過 → 還沒完成
 
-**完整 M1-M96 meta-lessons + 17 條 antipatterns + Self-critique checklist + Production pipeline SOP → [`references/meta-lessons-canon.md`](references/meta-lessons-canon.md)**
+**完整 M1-M99 meta-lessons + 17 條 antipatterns + Self-critique checklist + Production pipeline SOP → [`meta-lessons.md`](meta-lessons.md)**
 
 ---
 
@@ -64,7 +64,7 @@
 11. **🛣️ 接著跑 `route_content()`**（mass production）— 自動偵測 layout (portrait/landscape/mixed) + content type (vlog/teaching/diy) + 推薦 Path + BGM + preset family。**使用者丟任何素材都能 zero-config 開跑**
 12. **🎓 Build 第一件事 = 跑 `print_pre_build_checklist(decision.content_type)`**（Mode C #2 AP9 落地）— 顯示這個 content type 的 5 questions / defaults / wraps_lessons / verify_steps。**問使用者 batch 1 message 5 件事**（不要 5 次來回）+ 自動 enforce M-series（M64/M66/M68/M69/M70-M72 等）。**第一次跑 new content type 不再卡 3 輪 ship。** 已 register：`teaching_longform` / `food_vlog` / `travel_vlog` / `screen_recording_teaching`
 13. **🔒 「已完成」定義 = mp4 re-exported + 3 frame visual verify pass**（Mode C #2 AP10 落地）— JSON saved/synced **不算 done**。任何 JSON edit → 自動 flag「mp4 stale，需 re-export」
-14. **🌪️ 影視颶風剪輯 pattern library = INTEGRATE 不 REPLACE（M77）** — 病毒短片 pattern library 是「素材庫」，不換創作者人格。3 類用法：<br>    ✅ **INTEGRATE (universal craft)**：A 節奏 / B3-B4 視覺 / C2-C3-C5 權威 / D2-D4 聲音 / E promise — 直接套<br>    ⚙️ **CALIBRATE (依創作者舒適區)**：B1 slogan card 用自己的色彩 palette / C1 NAMING SELF 軟尾語氣 / D1 LUFS 推 -11~-12 不 -10 / G 極端化只 thumbnail 不 audio<br>    ❌ **REPLACE → 永遠用自己的 signature**：F1 silhouette → **自家彩色品牌 outro 卡（無人入鏡，M78 — 若創作者不露臉就不錄 talking head）** / F2 hand-on-chin → 「我們下支見 掰掰」軟尾**字卡** / B2/C4 phone view count → 自家社群截圖<br>    **永遠保留**：自家彩色 outro + SUBSCRIBE NOW 黃徽章 + 社群 CTA<br>    詳 [Tim Pan Playbook integration matrix](../../skills/video-craft-playbook/references/tim_pan_viral_short_playbook.md) 跟你的剪輯招牌 memory 檔
+14. **🌪️ 影視颶風剪輯 pattern library = INTEGRATE 不 REPLACE（M77）** — 病毒短片 pattern library 是「素材庫」，不換創作者人格。3 類用法：<br>    ✅ **INTEGRATE (universal craft)**：A 節奏 / B3-B4 視覺 / C2-C3-C5 權威 / D2-D4 聲音 / E promise — 直接套<br>    ⚙️ **CALIBRATE (依創作者舒適區)**：B1 slogan card 用自己的色彩 palette / C1 NAMING SELF 軟尾語氣 / D1 LUFS 推 -11~-12 不 -10 / G 極端化只 thumbnail 不 audio<br>    ❌ **REPLACE → 永遠用自己的 signature**：F1 silhouette → **你自己的品牌 outro 卡（可無人入鏡，M78 — 若創作者不露臉就不錄 talking head）** / F2 hand-on-chin → **你自己的結尾招牌句字卡** / B2/C4 phone view count → 你自己的社群截圖<br>    **永遠保留**：你自己的品牌 outro / 訂閱提示 / 你的社群 CTA<br>    詳 [Viral Short Playbook integration matrix](viral-short-playbook.md) 跟你自己的剪輯招牌 memory 檔
 
 ---
 
@@ -276,7 +276,7 @@ video-autopilot/
 ├── video_log.md                   ← 每支影片 plan + outcome 紀錄
 ├── optimization_log.md            ← 從 log 學到的 pattern + Mode C reports
 ├── references/
-│   └── meta-lessons-canon.md      ← M1-M96 + 17 antipatterns + Self-critique + SOP
+│   └── meta-lessons.md            ← M1-M99 + 17 antipatterns + Self-critique + SOP
 └── silent_vlog_maker/             ← Python pipeline helpers
     ├── __init__.py                ← Top-level re-exports
     ├── constants.py               ← SAFE_ZONE / fonts / colors / TONEMAP / curves

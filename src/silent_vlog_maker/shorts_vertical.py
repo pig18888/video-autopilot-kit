@@ -24,8 +24,11 @@ def _run(args):
                           text=True, encoding="utf-8", errors="replace")
 
 def _probe_dur(f):
-    return float(_run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration',
-                       '-of', 'csv=p=0', f]).stdout.strip())
+    r = _run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration',
+              '-of', 'csv=p=0', f])
+    if r.returncode or not r.stdout.strip():
+        raise RuntimeError(f"ffprobe 讀不到時長: {f}（檔案壞或非媒體檔）; stderr={r.stderr[-200:]}")
+    return float(r.stdout.strip())
 
 # ── M38: 去 emoji（NotoSansTC 無 emoji glyph → libass render 成豆腐框）──
 EMOJI_RE = re.compile(
@@ -44,6 +47,9 @@ COLOR_VARIETY = {
 }
 _MAIN_POS = r'{\an5\pos(540,1180)}'   # 中下置中（避上 384 / 下 1440 SHORTS_SAFE_ZONE）
 _ADDR_POS = r'{\an5\pos(540,1390)}'   # 底部安全區地址
+# MAIN 124px（「字太小」回饋放大；原 82）。⚠️ 上限約 124：WrapStyle=2 不自動換行，
+# \an5+\pos(540,) 置中可用全寬 1080，最長 8 字 ×124≈1008px（±504 落在 36..1044）剛好不衝框；
+# >130 的 8 字行會被裁掉。要更大就得把長句拆兩行（加 \N）。地址 58px（次要資訊不必最大）。
 
 _HEADER = """[Script Info]
 ScriptType: v4.00+
@@ -53,8 +59,8 @@ WrapStyle: 2
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: MAIN,Noto Sans TC,82,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,7,3,5,40,40,0,1
-Style: ADDR,Noto Sans TC,46,&H00FFFFFF,&H00000000,&HB0000000,-1,0,0,0,100,100,0,0,3,8,0,5,40,40,0,1
+Style: MAIN,Noto Sans TC,124,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,10,4,5,40,40,0,1
+Style: ADDR,Noto Sans TC,58,&H00FFFFFF,&H00000000,&HB0000000,-1,0,0,0,100,100,0,0,3,9,0,5,40,40,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -166,6 +172,9 @@ def pick_bgm(candidates, dur, prefer='energetic', margin=1.0):
         except Exception:
             continue
     if not scored:
+        if candidates:
+            print(f"[pick_bgm][WARN] 所有 {len(candidates)} 首候選都 < 影片長 {dur:.0f}s，退回最接近的一首，"
+                  f"播放時會 loop（可能接縫跳音）；建議換更長的曲子。")
         return candidates[0] if candidates else None
     scored.sort(reverse=(prefer == 'energetic'))
     return scored[0][1]
@@ -241,4 +250,20 @@ if __name__ == '__main__':
     _M = [-30, -25, -28, -24, -29, -22, -27]   # 3 個局部峰
     _pk = sum(1 for i in range(1, len(_M)-1) if _M[i] > _M[i-1] and _M[i] >= _M[i+1] and _M[i] > -40)
     assert _pk == 3, 'beat_rate 峰計數錯'
+    # pick_bgm 選曲邏輯 regression（mock _probe_dur/beat_rate，不跑 ffmpeg）
+    _orig_pd, _orig_br = _probe_dur, beat_rate
+    try:
+        _durs = {'short.mp3': 5.0, 'long_lo.mp3': 30.0, 'long_hi.mp3': 30.0}
+        _beats = {'short.mp3': 5.0, 'long_lo.mp3': 1.0, 'long_hi.mp3': 3.0}
+        _probe_dur = lambda f: _durs[f]            # noqa: E731  (test shim)
+        beat_rate = lambda f: _beats[f]            # noqa: E731  (test shim)
+        _cand = ['short.mp3', 'long_lo.mp3', 'long_hi.mp3']
+        assert pick_bgm(_cand, dur=17) == 'long_hi.mp3', 'energetic 應挑夠長+beat 最密'
+        assert pick_bgm(_cand, dur=17, prefer='chill') == 'long_lo.mp3', 'chill 應挑夠長+beat 最低'
+        assert pick_bgm(['short.mp3'], dur=17) == 'short.mp3', '全短曲應 fallback 回 candidates[0]'
+        assert pick_bgm([], dur=17) is None, '空候選應回 None'
+    finally:
+        _probe_dur, beat_rate = _orig_pd, _orig_br
+    # _probe_wh 解析 Windows '1080x1920x\r'（M97 修過，防回歸）
+    assert re.findall(r'\d+', '1080x1920x\r')[:2] == ['1080', '1920'], '_probe_wh 解析 Windows CRLF 漏'
     print('[shorts_vertical selftest] OK')

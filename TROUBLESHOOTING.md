@@ -21,7 +21,7 @@
    auto_sequence_brolls(captions, brolls, total_us, keyword_map=MY_MAP)
    ```
 
-> ⚠️ 不要傳內建的 `HAO_CAPTION_KEYWORD_MAP`（= `EXAMPLE_KEYWORD_MAP`）當你自己的 —— 那是原作者的主題範例（Studio / 遊戲 / 玩家系統），你的內容不會 match，反而干擾。**留空用 filename 對位，或抄它的結構寫自己的。**
+> ⚠️ 不要直接拿內建的 `EXAMPLE_KEYWORD_MAP` 當你自己的 —— 那只是一組中性示意主題（product / feature / food…），你的內容不會 match，反而干擾。**留空用 filename 對位，或抄它的結構寫自己的。**
 
 ### 輸入合約（input contract — 沒符合就一定對不上）
 

@@ -120,7 +120,7 @@ Source: [Humble&Brag Retention Benchmarks](https://humbleandbrag.com/blog/youtub
 
 - 純螢幕錄影、零人格訊號 → 個人 brand 連不上（觀眾記不住「誰教的」）
 - 一般 niche 靠 talking head 補人格 → **不露臉創作者不適用**
-- 🎯 **不露臉教學最佳作法**：開頭 14s b-roll / screen rec slow-burn + **voice-over hook 帶人格** → 螢幕錄影主體 + **角落 channel logo / avatar**（取代角落臉縮圖）→ 結尾 **品牌色彩 outro 卡 + 軟尾「我們下支見 掰掰」+ SUBSCRIBE NOW 徽章 + 社群 Discord CTA**（取代 talking head reaction）
+- 🎯 **不露臉教學最佳作法**：開頭 14s b-roll / screen rec slow-burn + **voice-over hook 帶人格** → 螢幕錄影主體 + **角落 channel logo / avatar**（取代角落臉縮圖）→ 結尾 **你自己的品牌 outro / 結尾招牌句 + 訂閱提示 + 你的社群 CTA**（取代 talking head reaction）
 - **人格訊號來源（無臉）**：voice-over 語氣 + 品牌色卡 + 軟尾語 + 一致的 outro，不靠臉
 
 ---
@@ -177,7 +177,7 @@ YT chapter title **本身會被搜尋表面 index**。每個 chapter = 一個額
 |---|---|---|---|
 | **48h ship sprint**（新模型） | 大發布 48h 內 | 「某新模型我實測 5 小時」 | 24-48h spike + early adopter |
 | **vs 對比**（evergreen） | 每月 1-2 支 | 「工具 A vs 工具 B vs 工具 C for X」 | 2.3x baseline + compound |
-| **「無 AI 基礎能用嗎」系列** | 每月 2-3 支 | 「無 AI 基礎也能用的某工具提示詞」 | Search + 演講受眾共鳴 |
+| **「無 AI 基礎能用嗎」系列** | 每月 2-3 支 | 「無 AI 基礎也能用的某工具提示詞」 | Search + 搜尋意圖共鳴 |
 | **Workflow 整合** | 每季 1 支 | 「我的 AI 影片完整工作流」 | 高 session contribution |
 
 ---
@@ -193,7 +193,7 @@ YT chapter title **本身會被搜尋表面 index**。每個 chapter = 一個額
 **目標 subreddit**：
 - 3D：r/blender / r/Maya / r/3Dmodeling / r/lowpoly / r/Cinema4D
 - AI：r/ChatGPT / r/midjourney / r/StableDiffusion / r/SunoMusic / r/ClaudeAI
-- 中文：PTT VideoCard / Mobile01 軟體區（兩個都吃 search）
+- 中文：你受眾語言圈的利基軟硬體論壇 / 社群（多半也吃 search）
 
 **SOP**（每支 ship 後 24h 內）：
 1. 寫 **native post**（不是純連結 — 違反 Rule 1）

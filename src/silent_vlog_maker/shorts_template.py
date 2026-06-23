@@ -19,7 +19,7 @@ from .shorts_captions import style_caption, render_caption_png, _font, _hex_rgb
 
 # niche 換皮：徽章文字 + 配色 bias（從 COLOR_VARIETY 挑）
 NETGAN_NICHE_PRESETS = {
-    "teaching": {"badge": "AI 創作小教室", "badge_color": "cyan",
+    "teaching": {"badge": "你的徽章文字", "badge_color": "cyan",
                  "accents": ["cyan", "gold", "lime"], "default_level": 2},
     "travel":   {"badge": "旅遊筆記",     "badge_color": "orange",
                  "accents": ["orange", "gold", "cream"], "default_level": 2},
@@ -90,7 +90,7 @@ HOOK_FORMULAS = {
         "name": "反差宣稱 Contrarian Claim",
         "pattern": "大家都說 {common}，但其實 {truth}",
         "examples": {
-            "teaching": "大家都說寫程式很難，但我 0 基礎用 AI 90 天做出 14 款遊戲",
+            "teaching": "大家都說寫程式很難，但我 0 基礎用 AI 做出了完整作品",
             "travel":   "大家都搶著去 {熱門景點}，但這個祕境連在地人都不知道",
             "food":     "大家都排隊那家網美店，但巷弄這碗才是真本事",
         },

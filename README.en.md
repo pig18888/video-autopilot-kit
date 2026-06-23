@@ -21,6 +21,7 @@ your answers fill it in — so it actually becomes **your** system.
 |---|---|
 | ⭐ `src/capcut_helpers/` | **Primary editing path** — CapCut Desktop automation (draft I/O, 4-level mute, captions/effects, post-export ffmpeg, AI-subtitle fixes, b-roll ratio + sync audit). **Driven by an AI assistant + Computer Use operating the CapCut window** (see Requirements) |
 | `src/silent_vlog_maker/` | **Secondary path (not the default)** — pure ffmpeg pipeline, **only for silent (no-voiceover) vlogs + post-processing CapCut exports** (content audit, asset normalize, KenBurns, subtitle burn). For normal edits, use CapCut |
+| `knowledge/` | **Video-production knowledge base** — M1-M99 pitfall compendium + algorithm + SOP + editing craft |
 | ⭐ `SETUP.md` | **Start here** — answer questions to make the system yours |
 | `templates/` | Blank fill-in templates: voice / brand / algorithm / community / pipeline / context |
 | `config.example.py` | Path config (env vars; **no account names** — auto-detects current user) |

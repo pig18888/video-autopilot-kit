@@ -3,7 +3,7 @@ broll_audit.py — M86 (通用占比) + M87 (旁白↔畫面對位) b-roll audit
 
 2026-06-01 audit「拆」: 從 caption_broll_matcher.py 抽出（該檔逼近 1000 行）。
 純搬移、零行為改變；capcut_helpers/__init__ re-export 這些名字，外部 import 不受影響。
-自我包含（_broll_basename / _source_key / *_PATH_HINTS / HAO_BROLL_CONTENT_KEYWORDS 都在本檔）。
+自我包含（_broll_basename / _source_key / *_PATH_HINTS / EXAMPLE_BROLL_CONTENT_KEYWORDS 都在本檔）。
 """
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -19,10 +19,9 @@ broll_audit.py — M86 (通用占比) + M87 (旁白↔畫面對位) b-roll audit
 
 # 路徑啟發式：transitions/ broll/ stock = 通用素材；_cleaned/raw 螢幕錄影/官網 demo = 主素材
 _GENERIC_PATH_HINTS = ("broll", "transitions", "/stock", "b-roll")
-_MAIN_PATH_HINTS = ("_cleaned", "screen", "studio", "obs", "dashboard",
-                    "gamehall", "game-hall", "player", "website", "官網", "demo",
-                    # 通用主素材 hint（2026-06-10 adopter fix：英文主素材不再全被當 generic）
-                    "main", "hero", "product", "interview", "tutorial", "recording", "demo")
+_MAIN_PATH_HINTS = ("_cleaned", "screen", "obs", "dashboard", "website", "官網", "demo",
+                    # 通用主素材 hint（adopter fix：英文主素材不再全被當 generic）
+                    "main", "hero", "product", "interview", "tutorial", "recording")
 
 
 def _broll_basename(path_or_name: str) -> str:
@@ -120,7 +119,7 @@ def print_broll_ratio_report(audit: dict) -> None:
 # M87 (2026-05-30): 旁白↔b-roll 內容對位 audit — content-map driven，不被檔名騙
 # ----------------------------------------------------------------------------
 # 用戶看 t=120「字幕跟聲音還有畫面都沒對上」。根因：M86 占比 swap 把寫程式段的
-# coding 畫面換成 studio 遊戲牆，旁白卻在講「把 Claude 當團隊用」→ 語意錯位；
+# coding 畫面換成另一個主題的 b-roll，旁白卻在講工具用法 → 語意錯位；
 # 且 in-place swap 留舊檔名騙過 filename-keyed 的 AP15。
 # 此 helper 吃「顯式 content-label」(非檔名) → 對每段 b-roll 檢查其內容主題是否
 # 出現在該段字幕裡。M86(占比) AND M87(對位) 都要 green 才能 ship。
@@ -129,10 +128,11 @@ def print_broll_ratio_report(audit: dict) -> None:
 # content-label → 該主題在字幕裡會出現的關鍵詞（演示型旁白）。'generic' 配反思/填充段，永遠 OK。
 # EXAMPLE only — pass your own keyword_map; empty default warns instead of vacuous-pass.
 EXAMPLE_BROLL_CONTENT_KEYWORDS = {
-    "studio":   ["網站", "studio", "首頁", "選單", "服務", "作品", "工坊", "部落格", "3d", "render", "網域", "架站"],
-    "gamehall": ["遊戲", "大廳", "款", "小遊戲", "免費", "策略", "動作", "卡牌", "桌遊", "玩法", "上癮"],
-    "player":   ["玩家", "系統", "金幣", "簽到", "成就", "勳章", "任務", "連勝", "排行", "獎"],
-    "coding":   ["claude", "團隊", "架構", "ui", "debug", "code", "寫", "工具", "加速", "關鍵", "提示詞", "坑"],
+    # neutral illustrative topics — replace with your own content-labels + keywords
+    "topic_product": ["產品", "網站", "首頁", "選單", "服務", "作品", "demo", "介面"],
+    "topic_feature": ["功能", "系統", "設定", "流程", "成就", "排行", "獎勵", "任務"],
+    "topic_code":    ["code", "debug", "架構", "ui", "工具", "提示詞", "prompt", "加速"],
+    "topic_food":    ["美食", "好吃", "招牌", "風味", "湯頭", "配料"],
     "generic":  [],  # reflective / filler / outro — 配任何旁白都算 OK
 }
 HAO_BROLL_CONTENT_KEYWORDS = EXAMPLE_BROLL_CONTENT_KEYWORDS  # back-compat alias
@@ -144,8 +144,8 @@ def narration_broll_sync_report(captions: list, segments: list,
 
     captions: list of (start_s: float, text: str)
     segments: list of (start_s, end_s, content_label) — content_label 是**顯式**內容主題
-              ('studio'/'gamehall'/'player'/'coding'/'generic'...)，**不是檔名**
-    keyword_map: {content_label: [關鍵詞...]}；預設 HAO_BROLL_CONTENT_KEYWORDS。
+              ('topic_product'/'topic_feature'/'topic_code'/'generic'...)，**不是檔名**
+    keyword_map: {content_label: [關鍵詞...]}；預設 EXAMPLE_BROLL_CONTENT_KEYWORDS。
     回傳 {rows:[{window, content, caps, matched, reason}], n_mismatch, passed}。
       matched=False 當該段 content 的關鍵詞一個都沒出現在該段字幕裡（generic 永遠 True）。
     strict=True 且有 mismatch → raise（build/swap gate）。

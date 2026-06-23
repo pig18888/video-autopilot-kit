@@ -1,7 +1,7 @@
 """
 silent_vlog_maker.asset_scanner — Auto-populate assets/index.json by scanning filesystem.
 
-掃 D:\\Hao0321_YT_Claude\\assets\\ + 自動建/更新 index.json：
+掃 <project-root>\\assets\\ + 自動建/更新 index.json：
 - bgm/ — ffprobe duration + bitrate
 - fonts/ — font metadata (Noto / SmileySans / etc.)
 - broll/ — placeholder（待用戶 populate）

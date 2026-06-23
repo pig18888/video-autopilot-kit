@@ -3,6 +3,49 @@
 All notable changes to **video-autopilot-kit** are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.4.1] — 2026-06-23
+
+**Privacy hardening + the font fix that should've shipped.** A 7-agent audit of the
+v0.4.0 drop found that the first sanitization pass missed a layer: hard identifiers AND
+semantic-layer fingerprints survived in `knowledge/meta-lessons.md` and a few sibling docs,
+and the same personal context lingered in some `src/` docstrings + the example keyword map.
+All scrubbed; verified by **5 rounds of adversarial multi-agent re-scan** (hard-identifier /
+semantic-fingerprint / triangulation-reconstruction / code-consistency angles) looped until a
+full round returned zero, backed by a whole-repo mechanical grep gate.
+
+### Fixed — privacy
+- **`knowledge/meta-lessons.md`** — removed real identifiers that slipped through: a personal
+  domain, a named real-world location + its giveaway selling-points, a real project name, real
+  export filenames, an absolute user path, the author-named keyword map, a real game-project
+  name, the channel's brand-keyword fingerprint, and a community-metric anecdote. Also restored
+  two `#000000` hex values the prior sanitizer had corrupted (broke the caption-style spec).
+- **Semantic-layer scrub** across `viral-short-playbook.md`, `ig-caption-patterns.md`,
+  `teaching-niche-playbook.md`, `capcut-text-templates.md`, `agent-token-efficiency.md`,
+  `capcut-agent-brief-template.md`, `capcut-automation-sop.md` — generalized author-specific
+  signatures, paraphrased real posts, a personal sign-off, and one-off measured telemetry into
+  neutral placeholders / clearly-labeled synthetic examples. Methodology preserved throughout.
+- **`src/`** — neutralized `EXAMPLE_KEYWORD_MAP` (had real game/project/location keywords incl.
+  a street address), genericized an outro-card docstring's shop+address, and removed a residual
+  drive path. Author-nicknamed public symbols (`HAO_*_MAP`, `apply_hao_teaching_dual_tier`,
+  `hao_teaching_*` preset keys) renamed to neutral names (`EXAMPLE_KEYWORD_MAP`,
+  `apply_teaching_dual_tier`, `teaching_*`) — **back-compat aliases kept**, so existing imports
+  still work.
+
+### Fixed — Shorts captions ship at the right size
+- **`shorts_vertical.py`** — the public kit was still shipping the *old* vertical-caption font
+  (MAIN 82px / ADDR 46px), which gets cropped on a 1080-wide frame. Synced to the corrected
+  values (MAIN **124px** / ADDR **58px** / heavier outline) that the private pipeline already
+  used, plus the load-bearing "124px = WrapStyle=2 8-char line ceiling" note.
+
+### Fixed — robustness + docs
+- `_probe_dur()` now raises a clear error on a bad/missing media file instead of an opaque
+  `could not convert string to float` (benefits `find_music_highlight` + `build_one_short`).
+- `pick_bgm()` no longer silently returns a too-short track when every candidate is shorter
+  than the video — it warns that the pick will loop.
+- Broken cross-links repaired (`references/…` paths → flat filenames), README content table
+  gains a `knowledge/` row (zh + en), `M1–M96` → `M1–M99`, duplicate `# Video Craft Playbook`
+  H1 disambiguated.
+
 ## [0.4.0] — 2026-06-23
 
 **Knowledge base drop.** The kit used to ship the *tools* (`src/` helpers) but not the
@@ -146,9 +189,9 @@ Adopter-readiness sweep (multi-agent, adversarially verified): fixed the remaini
 ### Fixed
 - **subtitle_corrections** — the author's personal mishear dict no longer force-applies.
   `use_builtin_corrections` defaults to **False** in the kit, so a stranger's legit
-  "cloud computing" / "the crowd" / "studio apartment" are NOT rewritten to Claude/Studio.
-- **broll_audit.narration_broll_sync_report** — defaults keyword_map to `{}` (was the
-  author's studio/gamehall/player/coding taxonomy → strangers got a vacuous always-pass).
+  "cloud computing" / "studio apartment" are NOT force-rewritten to some brand casing.
+- **broll_audit.narration_broll_sync_report** — defaults keyword_map to `{}` (was a
+  personal content taxonomy → strangers got a vacuous always-pass).
   Now warns loudly when content labels aren't in the map instead of silently passing.
 - **caption_broll_matcher** — accepts `pathlib.Path` identifiers (the module's own
   docstring example crashed with AttributeError); Latin tokens now stem (-s/-ing/-ed) so

@@ -4,7 +4,7 @@ capcut_helpers.text_style — CapCut「基礎」tab 預設組樣式 (2026-05-24 
 直式 Shorts 不需要花字 effect — 基礎 tab 的「預設組樣式」(6 個 Aa preset) 反而 cleaner / 更專業。
 這 module 提供 JSON pattern 套用這些 preset，不需走 Computer Use agent。
 
-從用戶 Tamsui-Ramen-Short-v2 seg #0 手動 reverse engineer 出的 pattern：
+從一支直式 Shorts 專案 seg #0 手動 reverse engineer 出的 pattern：
 - 字體：剪映团子 (CapCut bundled effect_id 7598225001988246801)
 - 預設樣式：白底黑邊 (white fill + 0.06 black stroke + no shadow)
 - 結構：清掉 extra_material_refs (花字) + 加 content.styles[].strokes
@@ -25,8 +25,8 @@ CAPCUT_FONTS = {
     "capcut_systemfont": {
         # M68 (2026-05-25) — CapCut bundled SystemFont (default)
         # Not in Cache/effect/ — lives in Apps/<version>/Resources/Font/SystemFont/
-        # 版本目錄 runtime 解析（2026-06-10 audit: 之前寫死 8.6.0.3667，CapCut
-        # 升級到 8.7.x 後舊目錄會被清掉 → dangling path）
+        # 版本目錄 runtime 解析（之前曾寫死特定版本號，CapCut
+        # 升級後舊目錄會被清掉 → dangling path；改用 glob 自動解析）
         "apps_glob": "AppData/Local/CapCut/Apps/*/Resources/Font/SystemFont",
     },
     # Future: add more user-discovered fonts here via the same pattern
@@ -61,7 +61,7 @@ def get_capcut_font_path(font_name: str) -> str:
 # ─────────────────────────────────────────────────────────────────────
 
 PRESET_STYLES = {
-    # 白底黑邊 (4th preset in panel — 用戶 2026-05-24 #004 偏好)
+    # 白底黑邊 (4th preset in panel — 用戶 2026-05-24 (a past project) 偏好)
     "white_outline_black": {
         "text_color": "#ffffff",
         "border_color": "#000000",
@@ -106,10 +106,10 @@ PRESET_STYLES = {
         "stroke_width": 0.06,
         "default_font": "剪映团子",
     },
-    # ⭐ M68 (2026-05-25) — Hao 教學長片字幕 PERMANENT DEFAULT (雙 tier)
+    # ⭐ M68 (2026-05-25) — 教學長片字幕 PERMANENT DEFAULT (雙 tier)
     # 用戶在 CapCut 手動 set + 2 張截圖教 + 鎖進 SKILL
     # Primary subtitle (中文 主要) — 較柔和（半透明 + 圓角 + 較高 box）
-    "hao_teaching_primary": {
+    "teaching_primary": {
         "text_color": "#ffffff",
         "border_color": "#000000",
         "border_width": 0.08,
@@ -125,7 +125,7 @@ PRESET_STYLES = {
     },
     # Secondary subtitle (英文 次要) — 較硬挺（全不透明 + 直角 + 較短 box）
     # 雙 tier 視覺區分主次 — 中文較柔和、英文較硬挺
-    "hao_teaching_secondary": {
+    "teaching_secondary": {
         "text_color": "#ffffff",
         "border_color": "#000000",
         "border_width": 0.08,
@@ -140,6 +140,10 @@ PRESET_STYLES = {
         "default_font": "capcut_systemfont",
     },
 }
+
+# back-compat aliases (deprecated key names)
+PRESET_STYLES["hao_teaching_primary"] = PRESET_STYLES["teaching_primary"]
+PRESET_STYLES["hao_teaching_secondary"] = PRESET_STYLES["teaching_secondary"]
 
 
 # ─────────────────────────────────────────────────────────────────────
@@ -273,12 +277,12 @@ def _is_chinese_text(text: str) -> bool:
     return any(0x4E00 <= ord(c) <= 0x9FFF for c in text)
 
 
-def apply_hao_teaching_dual_tier(draft: dict) -> dict:
-    """⭐ M68 — Hao 教學長片字幕 PERMANENT WORKFLOW (2026-05-25 用戶 lock)
+def apply_teaching_dual_tier(draft: dict) -> dict:
+    """⭐ M68 — creator's teaching 長片字幕 PERMANENT WORKFLOW (2026-05-25 用戶 lock)
 
     自動偵測每個 text material 語言 → apply 對應 preset：
-    - 中文 (CJK chars) → hao_teaching_primary (alpha 0.7 / radius 0.4 / height 0.28 — 柔和)
-    - 英文 (no CJK) → hao_teaching_secondary (alpha 1.0 / radius 0.0 / height 0.14 — 硬挺)
+    - 中文 (CJK chars) → teaching_primary (alpha 0.7 / radius 0.4 / height 0.28 — 柔和)
+    - 英文 (no CJK) → teaching_secondary (alpha 1.0 / radius 0.0 / height 0.14 — 硬挺)
 
     Modifies text materials at the JSON FIELD level (NOT via apply_text_preset because
     M68 uses background_alpha/radius/height field — different from base content.styles).
@@ -288,13 +292,13 @@ def apply_hao_teaching_dual_tier(draft: dict) -> dict:
     Usage (after CapCut AI 字幕 + 翻譯 done, but before Export):
         kill_capcut_all()           # M20
         draft = load_draft(name)
-        stats = apply_hao_teaching_dual_tier(draft)
+        stats = apply_teaching_dual_tier(draft)
         save_draft_with_sync(name, draft)
         # User reopens CapCut → verify → Export
     """
     import json
-    primary = PRESET_STYLES["hao_teaching_primary"]
-    secondary = PRESET_STYLES["hao_teaching_secondary"]
+    primary = PRESET_STYLES["teaching_primary"]
+    secondary = PRESET_STYLES["teaching_secondary"]
     font_path = get_capcut_font_path(primary["default_font"])  # capcut_systemfont
 
     texts = draft.get("materials", {}).get("texts", [])
@@ -345,6 +349,9 @@ def apply_hao_teaching_dual_tier(draft: dict) -> dict:
         t["content"] = json.dumps(co, ensure_ascii=False, separators=(",", ":"))
 
     return {"zh_count": zh_count, "en_count": en_count, "total": zh_count + en_count}
+
+
+apply_hao_teaching_dual_tier = apply_teaching_dual_tier  # back-compat
 
 
 def list_capcut_fonts() -> list[str]:

@@ -3,25 +3,25 @@ capcut_helpers.caption_broll_matcher — AP15 (2026-05-26).
 
 Land AP15 from Mode C #3: Build script 必做 caption-to-broll content matching audit.
 
-Root cause of #006 v3→v4 bug:
-- Caption「首先這是我的Studio網站」at t=48s landed on book b-roll (mismatch)
+Root cause of a past build v3→v4 bug:
+- A caption about the product/website at t=48s landed on book b-roll (mismatch)
 - Root: build_capcut_draft.py 順序填 b-roll，沒檢查 caption topic vs asset content
 
 Solution = this module:
 - `score_broll_for_caption()` — keyword-based scorer
 - `match_brolls_to_captions()` — for each caption, suggest best broll
 - `audit_caption_broll_mismatch()` — read existing draft, find existing mismatches
-- `HAO_CAPTION_KEYWORD_MAP` — default topic→keyword map (extensible)
+- `EXAMPLE_KEYWORD_MAP` — example topic→keyword map (extensible)
 
 Usage:
     from capcut_helpers import (
         load_draft, audit_caption_broll_mismatch, match_brolls_to_captions,
-        HAO_CAPTION_KEYWORD_MAP,
+        EXAMPLE_KEYWORD_MAP,
     )
 
     # BEFORE build — match captions to brolls
-    captions = [{'text': '首先這是我的Studio網站', 'start_us': 48_600_000, 'duration_us': 3_000_000}]
-    brolls = [Path('seg_02_studio.mp4'), Path('seg_01_book.mp4'), ...]
+    captions = [{'text': '這是我們的產品首頁', 'start_us': 48_600_000, 'duration_us': 3_000_000}]
+    brolls = [Path('seg_02_product.mp4'), Path('seg_01_book.mp4'), ...]
     matches = match_brolls_to_captions(captions, brolls)
     for m in matches:
         print(f'{m["caption_text"]!r} → {m["best_broll"]} (score {m["score"]:.2f})')
@@ -41,105 +41,55 @@ from typing import Optional
 
 
 # ─────────────────────────────────────────────────────────────────────
-# EXAMPLE keyword map (author's topics) — DEFAULT is empty {} + filename matching
+# EXAMPLE keyword map (neutral illustrative topics — replace with your own)
+#   — DEFAULT is empty {} + filename matching
 # Extensible: 用 extra_map kwarg 加新 topic 或 override
 # ─────────────────────────────────────────────────────────────────────
 
 # EXAMPLE only — functions DEFAULT to filename↔caption token matching (zero config).
 # Copy this structure for your own topics, OR name b-roll after content. Pass keyword_map=YOURS.
 EXAMPLE_KEYWORD_MAP = {
-    "studio_website": {
-        "caption_keywords": [
-            "Studio網站", "Studio 網站", "我的網站",
-            "首頁", "3D Render", "3D 質感",
-        ],
-        "broll_keywords": [
-            "studio",
-        ],
-        "topic_label": "Studio 網站 demo",
+    "topic_product": {
+        "caption_keywords": ["產品", "demo", "功能", "介面", "首頁", "網站"],
+        "broll_keywords": ["product", "demo", "ui", "screen", "site"],
+        "topic_label": "Product demo (example)",
     },
-    "game_hall": {
-        "caption_keywords": [
-            "遊戲大廳", "14款", "14 款", "原創小遊戲",
-            "にゃんこ", "突擊", "策略", "動作", "益智", "卡牌", "桌遊",
-            "HAO SURVIVOR", "吸血鬼",
-        ],
-        "broll_keywords": [
-            "game", "遊戲",
-        ],
-        "topic_label": "Game hall demo",
+    "topic_feature": {
+        "caption_keywords": ["系統", "功能", "設定", "流程", "徽章", "排行"],
+        "broll_keywords": ["feature", "system", "settings", "profile"],
+        "topic_label": "Feature / system (example)",
     },
-    "player_system": {
-        "caption_keywords": [
-            "玩家系統", "金幣", "簽到", "徽章", "Streak", "連勝", "排行",
-            "個人資料", "50金幣", "7天", "成就", "任務系統",
-        ],
-        "broll_keywords": [
-            "player", "profile", "徽章",
-        ],
-        "topic_label": "Player profile / 玩家系統",
+    "topic_code": {
+        "caption_keywords": ["Code", "Debug", "架構", "UI", "提示詞", "prompt", "工程師"],
+        "broll_keywords": ["code", "editor", "vscode", "cursor", "ide", "debug"],
+        "topic_label": "Code / Debug (example)",
     },
-    "code_editing": {
-        "caption_keywords": [
-            "Code", "Debug", "架構", "UI", "寫過 Code", "沒寫過Code", "把 Claude 當",
-            "團隊", "工程師", "提示詞", "prompt",
-        ],
-        "broll_keywords": [
-            "code", "editor", "vscode", "cursor", "ide", "debug",
-        ],
-        "topic_label": "Code / Debug",
+    "topic_learning": {
+        "caption_keywords": ["研究", "學習", "從零", "教學", "幾個月", "誤打誤撞"],
+        "broll_keywords": ["book", "study", "research", "reading", "page", "flip"],
+        "topic_label": "Research / learning (example)",
     },
-    "research_learning": {
-        "caption_keywords": [
-            "研究", "學習", "一頭栽進去", "學會了", "誤打誤撞", "外行人",
-            "從零", "幾個月", "90 天", "90天",
-        ],
-        "broll_keywords": [
-            "book", "study", "research", "reading", "page", "flip",
-        ],
-        "topic_label": "Research / 研究 / 學習",
+    "topic_reflection": {
+        "caption_keywords": ["感觸", "收尾", "結束", "社群", "歡迎", "留言", "討論"],
+        "broll_keywords": ["coffee", "meeting", "lifestyle", "talk"],
+        "topic_label": "Reflection / outro (example)",
     },
-    "reflection_lifestyle": {
-        "caption_keywords": [
-            "感觸", "到這邊", "結束", "掰掰", "我們下", "社群",
-            "歡迎", "留言", "討論", "創作者", "開發者",
-        ],
-        "broll_keywords": [
-            "coffee", "meeting", "roundtable", "lifestyle", "talk",
-        ],
-        "topic_label": "Reflection / 收尾 / 反思",
+    "topic_intro": {
+        "caption_keywords": ["大家好", "今天這一支", "訂閱", "看到最後"],
+        "broll_keywords": ["laptop", "typing", "hand", "intro"],
+        "topic_label": "Intro / generic (example)",
     },
-    "intro_generic": {
-        "caption_keywords": [
-            "今天這一支", "大家好", "訂閱", "看到最後", "瘋狂",
-            "我跟你們說", "你們說",
-        ],
-        "broll_keywords": [
-            "laptop", "typing", "hand", "intro",
-        ],
-        "topic_label": "Intro / generic talking",
+    "topic_food": {
+        # Example: food-vlog style topics
+        "caption_keywords": ["美食", "好吃", "招牌", "風味", "湯頭", "配料"],
+        "broll_keywords": ["food", "dish", "bowl", "soup", "noodle"],
+        "topic_label": "Food / dish (example)",
     },
-    "food_dish": {
-        # For #004-style food vlogs
-        "caption_keywords": [
-            "拉麵", "湯頭", "叉燒", "鹽味", "醬油", "麵條", "配料",
-            "好吃", "美味", "招牌",
-        ],
-        "broll_keywords": [
-            "ramen", "noodle", "bowl", "food", "dish", "soup",
-        ],
-        "topic_label": "Food / 菜品",
-    },
-    "shop_info": {
-        # For #004-style food vlogs — outro store info
-        "caption_keywords": [
-            "店", "店家", "地址", "營業時間", "電話", "淡水",
-            "中山路", "重建街", "分店",
-        ],
-        "broll_keywords": [
-            "storefront", "shop", "exterior", "sign",
-        ],
-        "topic_label": "Shop info / 店家",
+    "topic_shop": {
+        # Example: food-vlog style topics
+        "caption_keywords": ["店家", "地址", "營業時間", "電話", "分店"],
+        "broll_keywords": ["storefront", "shop", "exterior", "sign"],
+        "topic_label": "Shop info (example)",
     },
 }
 
@@ -149,7 +99,7 @@ HAO_CAPTION_KEYWORD_MAP = EXAMPLE_KEYWORD_MAP  # back-compat alias
 
 
 # Language-agnostic ZERO-CONFIG fallback (2026-06-10 — adopter bug report)
-# 沒有 keyword_map（或非中文 / 非 Hao 主題）時，靠「caption 文字 ↔ b-roll 檔名」
+# 沒有 keyword_map（或非中文 / 非預設主題）時，靠「caption 文字 ↔ b-roll 檔名」
 # 共同 token 對位 —— 採用者只要把素材用內容命名 (coffee.mp4 / sunset.mov)
 # 就能對齊旁白，完全不用設定 keyword map。
 # ─────────────────────────────────────────────────────────────────────
@@ -210,7 +160,7 @@ def score_broll_for_caption(
     Args:
         caption_text: The caption text (Chinese / English mix OK)
         broll_identifier: Filename, asset name, OR path basename of the broll
-        keyword_map: Optional override of HAO_CAPTION_KEYWORD_MAP
+        keyword_map: Optional override of EXAMPLE_KEYWORD_MAP
 
     Returns: (score, matched_topic_label)
         Score logic:
@@ -221,10 +171,10 @@ def score_broll_for_caption(
           - 0.0 = no match
 
     Example:
-        >>> score_broll_for_caption('首先這是我的Studio網站', 'studio.mp4')
-        (1.0, 'Studio 網站 demo')
-        >>> score_broll_for_caption('首先這是我的Studio網站', 'seg_01_book-flip.mp4')
-        (0.3, '')  # caption matches studio topic, broll matches research topic — mismatch
+        >>> score_broll_for_caption('這是我們的產品首頁', 'product.mp4')
+        (1.0, 'Product demo (example)')
+        >>> score_broll_for_caption('這是我們的產品首頁', 'seg_01_book-flip.mp4')
+        (0.3, '')  # caption matches product topic, broll matches learning topic — mismatch
     """
     km = keyword_map if keyword_map is not None else {}  # 公開版預設純 filename↔caption 對位
     # coerce 到 str — 採用者常傳 pathlib.Path（glob 出來的）；docstring 範例也是 Path
@@ -263,7 +213,7 @@ def score_broll_for_caption(
         return (0.5, km[best_topic]["topic_label"])
 
     # Neither keyword-matches — zero-config fallback: caption↔filename token overlap
-    # (讓沒設 keyword_map / 非中文 / 非 Hao 主題的採用者也能對位)
+    # (讓沒設 keyword_map / 非中文 / 非預設主題的採用者也能對位)
     fb = _filename_caption_overlap(caption_text, broll_identifier)
     if fb > 0:
         return (fb, "filename↔caption match")
@@ -564,7 +514,7 @@ def _windowed_topic(caption_text_list: list, center_idx: int, window: int,
         caption_text_list: full list of caption texts
         center_idx: index of caption under analysis
         window: how many neighbours each side (±window)
-        keyword_map: HAO_CAPTION_KEYWORD_MAP
+        keyword_map: EXAMPLE_KEYWORD_MAP
         decay: hit weight = decay**distance (e.g. 0.5 → ±1 neighbour worth half)
 
     Returns: (best_topic_id, weighted_score) — falls back to 'generic' if 0.
@@ -665,7 +615,7 @@ def auto_sequence_brolls(
         captions: [{text: str, start_us: int, duration_us: int}, ...] sorted by start_us
         brolls: [{id: str, source_duration_us: int}, ...] — available b-roll pool
         total_duration_us: total timeline duration (= sum of all assignment durations)
-        keyword_map: optional HAO_CAPTION_KEYWORD_MAP override
+        keyword_map: optional EXAMPLE_KEYWORD_MAP override
         allow_reuse: True = brolls can repeat / False = each used at most once
         min_segment_us: don't fragment below this (combine short clusters with neighbors)
         consolidate_consecutive: True = post-pass merge adjacent same-broll slots (recommended)
@@ -690,9 +640,9 @@ def auto_sequence_brolls(
         - `look_ahead_window=0` → falls back to v0.1 per-caption greedy.
 
     ✅ v0.2 fixes (vs v0.1):
-        - Cat Game OBS missed in #006 minute-2 zone (game-hall section)
-          → expected: windowed mode now properly clusters the 「我做了 14 款小遊戲」+
-          「免費玩」+「分類」captions into game-hall topic before they fragment.
+        - a demo clip missed in a past build's minute-2 zone (feature-demo section)
+          → expected: windowed mode now properly clusters the 「這個系統有很多功能」+
+          「免費用」+「分類」captions into the feature-demo topic before they fragment.
 
     ⚠️  v0.2 STILL OPEN (v0.3 roadmap):
         - No "narrative arc" awareness — doesn't know hook→demo→cta structure.

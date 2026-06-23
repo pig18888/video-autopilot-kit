@@ -158,13 +158,13 @@ YT 演算法深度 + MrBeast 戰術，為**教學頻道改寫**。本 skill 是 
 
 ### 跟其他 skill 的觸發優先級
 
-→ 對照表只維護一份：本檔頂部「該用哪個 skill」決策樹 + `video-autopilot/SKILL.md` §決策樹（canonical）。
+→ 對照表只維護一份：本檔頂部「該用哪個 skill」決策樹 + `autopilot-workflow.md`（完整 9 步 workflow）。
 
 ### 在 9 步 workflow 中的位置
 
 本 skill 是 end-to-end workflow 的**第 1 + 5 + 6 + 8 + 9 步**（最多參與 — 包含 Pre-flight、Retention Surgery、Packaging War Room、Analytics Decode、Iteration），由 `video-autopilot` 自動 orchestrate。
 
-→ **完整 9 步 workflow → 詳見 [`video-autopilot/SKILL.md`](../video-autopilot/SKILL.md) (master)**
+→ **完整 9 步 workflow → 詳見 [autopilot-workflow.md](autopilot-workflow.md)**
 
 用戶說「規劃我下一支X」會自動觸發 autopilot，autopilot 會呼叫本 skill 的 Mode A + B + C + D + E。
 

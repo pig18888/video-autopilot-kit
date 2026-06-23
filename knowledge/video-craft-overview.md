@@ -1,6 +1,6 @@
 > 來自 video-autopilot-kit 開源知識庫 · MIT 授權
 
-# Video Craft Playbook
+# Video Craft Overview（跨平台剪輯技法總覽）
 
 策略 + 結構 + 演算法 — for YT 長片 / YT Shorts / IG Reels。本知識檔是**廣度 / 快速版**。**深度 YT-only + 頂級創作者級**請用對應的深度版知識檔。
 

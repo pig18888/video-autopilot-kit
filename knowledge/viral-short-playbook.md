@@ -2,7 +2,7 @@
 
 > 來自 video-autopilot-kit 開源知識庫 · MIT 授權
 
-> 反推自一支頭部影音教學頻道的課程促銷 short（高互動：十萬級讚 / 千級留言 / 萬級分享）+ 公開訪談背景。
+> 反推自某頭部教學頻道（示意）的一支高互動課程促銷 short。
 > 方法論：對一支高表現短影片做逐刀 (cut-by-cut) 拆解，提煉可複用的剪輯技法。
 
 ---
@@ -15,9 +15,9 @@
 |---|---|---|
 | ✅ **INTEGRATE**（universal craft，無人格衝突） | **A1** 14 秒一鏡 / **A2** 慢→快→慢弧 / **A3** cut on caption / **B3** multi-pane / **B4** data viz / **C2** editing UI / **C3** thumbnail wall / **C5** Pro tool close-up / **D2** cut on beat / **D3** AI voice mock / **D4** SFX / **E1-E5** promise | 直接套，不用 calibrate |
 | ⚙️ **CALIBRATE**（依自己舒適區調整程度） | **B1** slogan card → 用自己的色彩 palette（不必照抄純黑底）/ **C1** NAMING SELF → 用自己的語氣（硬尾 vs 軟尾）/ **D1** LUFS → 依品牌調性微調（不一定推到參考對象的極端值）/ **G** 極端化 → thumbnail 可極端，但 audio/cut 程度依自己節奏 | 套技法但程度依既有節奏微調 |
-| ❌ **REPLACE — 永遠用自己的 signature** | **F1** silhouette / sunset → 用**自己的品牌 outro 卡**（若不入鏡 / 不錄 talking head，就用無人入鏡的字卡）/ **F2** hand-on-chin pose → 若不入鏡，改用 outro 字卡軟尾招牌（如「我們下支見 掰掰」）/ **B2+C4** phone view count screenshot → 換成**自己的社群截圖 / 自己的數據** | 兩種人格互斥，永遠保留自己的 signature |
+| ❌ **REPLACE — 永遠用自己的 signature** | **F1** silhouette / sunset → 用**你自己的品牌 outro 卡**（若你的頻道不露臉，就用無人入鏡的字卡）/ **F2** hand-on-chin pose → 若你的頻道不露臉，改用 outro 字卡軟尾招牌（用你自己的結尾招牌句）/ **B2+C4** phone view count screenshot → 換成**你自己的社群截圖 / 你自己的數據** | 兩種人格互斥，永遠保留你自己的 signature |
 
-**永遠保留（無參考對照）**：自己品牌的彩色 outro + 訂閱徽章 + 社群 CTA。
+**永遠保留（無參考對照）**：你自己的品牌 outro / 訂閱提示 / 你的社群 CTA。
 
 **為什麼這個 matrix 重要**：常見錯誤是把整份參考 playbook 寫成 MANDATORY default → 強迫自己錄參考對象的 silhouette / hand-on-chin pose（F1/F2）→ 完全違反自己既有的 signature。教訓：**Reference = pattern library，不是 personality clone。Integrate 不 replace 你自己。**
 
@@ -25,10 +25,10 @@
 
 ## 🎯 為什麼學頭部教學頻道
 
-- **千萬級訂閱**的中文影音教學頻道（華語圈最大量級之一）
-- 「我們做封面也只能越來越誇張，不然根本沒人點進來」— 內容**極端化**先驅
+- 某頭部教學頻道（示意）— 訂閱量級在同類教學頻道中名列前段
+- 內容**極端化**先驅：據其公開說法，封面被迫越做越誇張，否則難以吸引點擊
 - 自述工作流：**先 AI 旁白抓節奏 → 剪輯師依節奏剪 → 創作者補正式旁白**
-- 「平台變成了『誰叫得更大聲』的比賽」— 音量響度比十年前高好幾倍
+- 據其公開說法，平台已演變成比誰音量更響的競賽 — 音量響度比十年前高好幾倍
 
 → 爆款公式 = **「節奏 + 視覺極端化 + 權威堆疊 + 情感收尾」** 4 維度同時拉滿
 
@@ -113,14 +113,14 @@
 
 | 技法 | 怎麼用 | 應用範例 |
 |---|---|---|
-| **F1 — Silhouette + sunset / 海** | 情侶剪影看海 = 「你能創造這種回憶」 | 旅遊 vlog 結尾可含；教學影片可用「你也能做出像這樣的東西」b-roll（若不入鏡則用無人空景） |
-| **F2 — Hand on chin 反思 pose** | 軟化 sales pitch，feels personal | 教學結尾換個 pose 講「下一支會公開...」（若不入鏡則用 outro 字卡軟尾） |
+| **F1 — Silhouette + sunset / 海** | 情侶剪影看海 = 「你能創造這種回憶」 | 旅遊 vlog 結尾可含；教學影片可用「你也能做出像這樣的東西」b-roll（若你的頻道不露臉則用無人空景） |
+| **F2 — Hand on chin 反思 pose** | 軟化 sales pitch，feels personal | 教學結尾換個 pose 講「下一支會公開...」（若你的頻道不露臉則用 outro 字卡軟尾 + 你自己的結尾招牌句） |
 | **F3 — Sound fade out** | 結尾音量緩降不 hard cut | 剪輯軟體 audio fade 1-2 sec 必加 |
 
-### G. Meta — 極端化（訪談原話）
+### G. Meta — 極端化（間接整理自公開說法）
 
-> 「我們做封面也只能越來越誇張，不然根本沒人點進來，連聲音也成為戰場」
-> 「你去聽十年前的影片，現在的音量響度都高出好幾倍。大家都在偷偷把音樂拉大聲，平台變成了『誰叫得更大聲』的比賽」
+> 該頻道公開談過：封面被迫越做越誇張，否則沒人點進來，連聲音也成了戰場。
+> 也提到十年前的影片音量明顯較低，如今大家都把音樂拉大聲，平台演變成比誰更響的競賽。
 
 → **短影片紅線**：
 1. Thumbnail 不誇張 = 死
@@ -147,8 +147,8 @@
 0:35-0:40  Big-text Slogan Card 「3 pillar」黑底白字
 0:40-0:50  Demo / Workflow B-roll: Pro tool close-up
 0:50-0:55  Social proof: phone w/ view count OR 用戶 feedback
-0:55-0:60  Emotional CTA: silhouette/sunset/personal moment（不入鏡則用無人空景）
-0:60-結束    Hand-on-chin reflective + 「下一支會...」open loop（不入鏡則用 outro 字卡）
+0:55-0:60  Emotional CTA: silhouette/sunset/personal moment（若你的頻道不露臉則用無人空景）
+0:60-結束    Hand-on-chin reflective + 「下一支會...」open loop（若你的頻道不露臉則用 outro 字卡 + 你自己的結尾招牌句）
 ```
 
 → 預期：90 秒 ~ 20 cuts / avg 4.5 sec/cut / LUFS 推高

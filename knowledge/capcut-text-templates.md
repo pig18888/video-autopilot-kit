@@ -48,7 +48,9 @@
 2. `text.content.styles[].fill.content`（splash 類用 texture / crayon 類用 solid color）
 3. `materials.effects` list 內對應條目 + `segment.extra_material_refs`
 
-## Browse Agent 找到的免費 4-template 推薦組合（旅遊 vlog）
+## 一組常用免費花字搭配示意（以 vlog 類型為例）
+
+> 以下為一組常用免費花字的搭配示意，你可以挑類似角色的免費模板自行組合：
 
 | 角色 | 模板 | 分類 | 備註 |
 |---|---|---|---|
@@ -57,9 +59,9 @@
 | Emphasis stamp (5x) | **SPOKE** | 大熱 | 黃色粗體 + 黑邊（綜藝旅遊節目風）|
 | Narrative lower-third (12x) | **YOUR TITLE / The subtitle** | 標記 | 左側 accent bar |
 
-## 🏆 一支旅遊 vlog 的 canonical 最終設定（手動定版範例）
+## 🏆 某類型 vlog 的通用花字混搭原則
 
-創作者手動最終版的 CapCut 設定（**絕對不要 JSON 改回 uniform**）：
+以下為一組 vlog 花字混搭的通用設定原則（**定版後絕對不要 JSON 改回 uniform**）：
 
 ### Effects 混搭（不是套同一個花字）
 | Effect 類型 | 數量比例 | 用途 |
@@ -93,7 +95,7 @@
 - 一支 vlog 可套 **10+ 個** segments 用 `canvas_blur`
 - 主要套在 **portrait（直式）照片**，把黑邊 letterbox 變成 blur 延伸背景
 - JSON 結構：`materials.canvases` entries with `type: "canvas_blur", blur: 1.0`
-- 旅遊 vlog 看起來專業的關鍵 — **以後 build 預設套到所有 portrait 照片**
+- 這是 vlog 看起來專業的關鍵之一 — **你可以在 build 時預設套到所有 portrait 照片**
 
 ## 🌟 找創作者 favorited 花字 SOP
 

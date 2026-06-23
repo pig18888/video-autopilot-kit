@@ -71,12 +71,12 @@ from .effects import (
 )
 
 # 🆕 M51 (2026-05-24): 直式 Shorts 預設組樣式 (非花字)
-# 🆕 M68 (2026-05-25): Hao 教學長片字幕雙 tier auto-apply
+# 🆕 M68 (2026-05-25): 教學長片字幕雙 tier auto-apply
 from .text_style import (
     CAPCUT_FONTS, PRESET_STYLES,
     get_capcut_font_path, list_capcut_fonts, list_preset_styles,
     apply_text_preset, apply_text_preset_to_all,
-    apply_hao_teaching_dual_tier,  # M68 — 教學字幕中文+英文雙 tier 一鍵套
+    apply_teaching_dual_tier,  # M68 — 教學字幕中文+英文雙 tier 一鍵套
 )
 
 # 🆕 M55+M56 (2026-05-24): ffmpeg post-process MANDATORY final phase
@@ -118,10 +118,10 @@ from .invariants import (
 )
 
 # 🆕 AP15 落地 (2026-05-26 Mode C #3): caption ↔ b-roll content matching audit
-# 解 #006 v3→v4「Studio caption 配 book b-roll」mismatch type bug
+# 解 (a past project) v3→v4「a topic-A caption wrongly paired with topic-B b-roll」mismatch type bug
 # 🆕 M75 (2026-05-26): auto-sequencer — 不只 audit，build-time 直接排好順序
 from .caption_broll_matcher import (
-    HAO_CAPTION_KEYWORD_MAP,
+    EXAMPLE_KEYWORD_MAP,
     score_broll_for_caption, match_brolls_to_captions,
     audit_caption_broll_mismatch, print_mismatch_report,
     BrollAssignment, auto_sequence_brolls, print_sequence_plan,
@@ -130,7 +130,7 @@ from .caption_broll_matcher import (
 # （caption_broll_matcher.py 逼近 1000 行）。re-export 保持外部 import 不變。
 from .broll_audit import (
     classify_broll_role, audit_broll_main_ratio, print_broll_ratio_report,
-    HAO_BROLL_CONTENT_KEYWORDS, narration_broll_sync_report, print_narration_sync_report,
+    EXAMPLE_BROLL_CONTENT_KEYWORDS, narration_broll_sync_report, print_narration_sync_report,
 )
 
 from .audit import (
@@ -159,7 +159,7 @@ __all__ = [
     "CAPCUT_FONTS", "PRESET_STYLES",
     "get_capcut_font_path", "list_capcut_fonts", "list_preset_styles",
     "apply_text_preset", "apply_text_preset_to_all",
-    "apply_hao_teaching_dual_tier",
+    "apply_teaching_dual_tier",
     # 🆕 M55 + M56 mandatory post-export
     "force_mix_bgm", "add_outro_card", "finalize_export",
     # 🆕 M82 + M83 ship-final (helper 落地 2026-05-29 — 補 canon 宣稱但未實作的 helper)
@@ -168,14 +168,14 @@ __all__ = [
     "BRAND_CORRECTIONS", "CHINESE_HOMOPHONE_CORRECTIONS", "PHRASE_CORRECTIONS",
     "apply_subtitle_corrections", "scan_potential_errors",
     # 🆕 AP15 caption-broll matcher + 🆕 M75 auto-sequencer
-    "HAO_CAPTION_KEYWORD_MAP",
+    "EXAMPLE_KEYWORD_MAP",
     "score_broll_for_caption", "match_brolls_to_captions",
     "audit_caption_broll_mismatch", "print_mismatch_report",
     "BrollAssignment", "auto_sequence_brolls", "print_sequence_plan",
     # 🆕 M86 generic-vs-main b-roll 占比 enforce (2026-05-30)
     "classify_broll_role", "audit_broll_main_ratio", "print_broll_ratio_report",
     # 🆕 M87 narration↔b-roll 內容對位 (2026-05-30)
-    "HAO_BROLL_CONTENT_KEYWORDS", "narration_broll_sync_report", "print_narration_sync_report",
+    "EXAMPLE_BROLL_CONTENT_KEYWORDS", "narration_broll_sync_report", "print_narration_sync_report",
     # 🆕 AP12 helper invariants (2026-05-26) — 漏列補上 (2026-05-29 audit)
     "validate_invariants", "TEXT_MATERIAL_INVARIANTS", "TEXT_MATERIAL_AUTO_FIX",
     # audit
