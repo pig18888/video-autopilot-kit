@@ -13,7 +13,7 @@ from typing import Iterable
 
 import requests
 
-SEARCH_API = "https://www.104.com.tw/jobs/search/list"
+SEARCH_API = "https://www.104.com.tw/jobs/search/api/jobs"
 
 # 常用地區代碼（104 area code）。可自行擴充。
 AREA_CODES = {
@@ -92,9 +92,27 @@ def _build_params(keyword: str, area_code: str, page: int) -> dict:
     }
 
 
+def _job_list(payload: dict) -> list:
+    """新版 API 的 data 直接是職缺陣列；相容舊版的 data.list。"""
+    data = payload.get("data", [])
+    if isinstance(data, dict):
+        return data.get("list", [])
+    return data if isinstance(data, list) else []
+
+
+def _total_page(payload: dict) -> int | None:
+    meta = payload.get("metadata") or {}
+    pag = meta.get("pagination") or {}
+    for key in ("lastPage", "totalPage", "total_page"):
+        v = pag.get(key)
+        if isinstance(v, int):
+            return v
+    return None
+
+
 def _extract_jobs(payload: dict) -> list[Job]:
     jobs: list[Job] = []
-    for item in payload.get("data", {}).get("list", []):
+    for item in _job_list(payload):
         salary_desc = item.get("salaryDesc", "") or ""
         link = item.get("link", {}) or {}
         job_url = link.get("job", "") or ""
@@ -153,8 +171,8 @@ def search_104(
             break  # 沒資料代表已到底
         results.extend(page_jobs)
 
-        total_page = payload.get("data", {}).get("totalPage", page)
-        if page >= total_page:
+        total_page = _total_page(payload)
+        if total_page is not None and page >= total_page:
             break
         time.sleep(delay)  # 禮貌性延遲，避免打太快
 

@@ -117,6 +117,15 @@ def _total_pages(payload: dict) -> int:
     return 1
 
 
+# 1111 目前在搜尋頁前面放了反爬蟲驗證碼（/api/v1/captcha-gate），
+# 用 requests 這類無頭請求會被 404／captcha 擋住，需改用瀏覽器自動化
+# （Selenium/Playwright）並處理驗證碼，成本高且易失效。預設停用。
+UNSUPPORTED_MSG = (
+    "1111 目前有反爬蟲驗證碼（captcha gate）保護，無法用簡單請求抓取；"
+    "需改用瀏覽器自動化。目前僅支援 104。"
+)
+
+
 def search_1111(
     keyword: str,
     area: str = "全部",
@@ -125,7 +134,23 @@ def search_1111(
     delay: float = 0.6,
     session: requests.Session | None = None,
 ) -> list[Job]:
-    """搜尋 1111 職缺。介面與 scraper.search_104 一致。"""
+    """搜尋 1111 職缺。介面與 scraper.search_104 一致。
+
+    註：1111 有 captcha 保護，此函式預設直接丟出說明錯誤。若日後要啟用，
+    請改用瀏覽器自動化，並把 _extract_jobs 的欄位對應調整成實際回應。
+    """
+    raise NotImplementedError(UNSUPPORTED_MSG)
+
+
+def _search_1111_raw(
+    keyword: str,
+    area: str = "全部",
+    min_salary: int = 0,
+    max_pages: int = 3,
+    delay: float = 0.6,
+    session: requests.Session | None = None,
+) -> list[Job]:
+    """保留原本的 API 呼叫流程，供日後接上瀏覽器自動化時參考。"""
     if not keyword.strip():
         raise ValueError("keyword 不可為空")
 

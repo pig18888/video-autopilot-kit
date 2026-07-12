@@ -12,8 +12,8 @@ SEARCHES = [
 # 每組最多抓幾頁
 MAX_PAGES = 3
 
-# 要查詢的來源
-SOURCES = ["104", "1111"]
+# 要查詢的來源（1111 有反爬蟲驗證碼，目前僅支援 104）
+SOURCES = ["104"]
 
 # ---- Email 通知（用 SMTP 寄新職缺；Gmail 需用「應用程式密碼」）----
 EMAIL_ENABLED = False          # 設 True 才會實際寄信
