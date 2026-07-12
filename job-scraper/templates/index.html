@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>104 職缺自動查詢</title>
+  <style>
+    :root { --accent: #0066cc; --bg: #f5f6f8; --line: #e2e5ea; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+           background: var(--bg); color: #1a1a1a; }
+    header { background: var(--accent); color: #fff; padding: 20px 24px; }
+    header h1 { margin: 0; font-size: 20px; }
+    header p { margin: 4px 0 0; opacity: .85; font-size: 13px; }
+    main { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    form { background: #fff; border: 1px solid var(--line); border-radius: 10px;
+           padding: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 12px; color: #667; }
+    input, select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px;
+                    font-size: 14px; min-width: 140px; }
+    button { background: var(--accent); color: #fff; border: 0; border-radius: 6px;
+             padding: 9px 18px; font-size: 14px; cursor: pointer; }
+    button.ghost { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+    .meta { margin: 18px 2px 8px; font-size: 14px; color: #445; display: flex;
+            justify-content: space-between; align-items: center; }
+    .error { background: #fde8e8; color: #a12; padding: 12px 14px; border-radius: 8px;
+             margin-top: 16px; }
+    table { width: 100%; border-collapse: collapse; background: #fff;
+            border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line);
+             font-size: 14px; vertical-align: top; }
+    th { background: #fafbfc; font-size: 12px; color: #667; }
+    tr:last-child td { border-bottom: 0; }
+    td .desc { color: #778; font-size: 12px; margin-top: 4px; max-width: 360px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .empty { text-align: center; color: #889; padding: 40px; }
+    .salary { white-space: nowrap; color: #0a7; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>104 職缺自動查詢</h1>
+    <p>輸入條件即時抓取 104 人力銀行職缺，可匯出 CSV（Excel 可開）</p>
+  </header>
+  <main>
+    <form method="get" action="/">
+      <div class="field">
+        <label>關鍵字</label>
+        <input name="keyword" value="{{ keyword }}" placeholder="例如：python 後端" required>
+      </div>
+      <div class="field">
+        <label>地區</label>
+        <select name="area">
+          {% for a in areas %}
+            <option value="{{ a }}" {% if a == area %}selected{% endif %}>{{ a }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>最低月薪</label>
+        <input name="min_salary" type="number" min="0" step="1000" value="{{ min_salary }}">
+      </div>
+      <div class="field">
+        <label>抓取頁數</label>
+        <input name="max_pages" type="number" min="1" max="10" value="{{ max_pages }}">
+      </div>
+      <button type="submit">查詢</button>
+    </form>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if keyword and not error %}
+      <div class="meta">
+        <span>找到 <strong>{{ jobs|length }}</strong> 筆「{{ keyword }}」職缺</span>
+        {% if jobs %}
+          <a class="ghost" href="/export.csv?keyword={{ keyword|urlencode }}&area={{ area|urlencode }}&min_salary={{ min_salary }}&max_pages={{ max_pages }}">
+            <button class="ghost" type="button">⬇ 匯出 CSV</button>
+          </a>
+        {% endif %}
+      </div>
+
+      {% if jobs %}
+        <table>
+          <thead>
+            <tr>
+              <th>職缺 / 工作內容</th>
+              <th>公司</th>
+              <th>薪資</th>
+              <th>地區</th>
+              <th>刊登日</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for j in jobs %}
+              <tr>
+                <td>
+                  <a href="{{ j.job_url }}" target="_blank" rel="noopener">{{ j.title }}</a>
+                  {% if j.description %}<div class="desc">{{ j.description[:120] }}{% if j.description|length > 120 %}…{% endif %}</div>{% endif %}
+                </td>
+                <td><a href="{{ j.company_url }}" target="_blank" rel="noopener">{{ j.company }}</a></td>
+                <td class="salary">{{ j.salary }}</td>
+                <td>{{ j.location }}</td>
+                <td>{{ j.date }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="empty">查無符合條件的職缺，試試放寬關鍵字或降低最低薪資。</div>
+      {% endif %}
+    {% elif not keyword %}
+      <div class="empty">輸入關鍵字開始查詢。</div>
+    {% endif %}
+  </main>
+</body>
+</html>
