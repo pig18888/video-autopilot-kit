@@ -21,7 +21,7 @@
 cd job-scraper
 pip install -r requirements.txt
 python app.py
-# 瀏覽器開 http://127.0.0.1:5000
+# 瀏覽器開 http://127.0.0.1:8000
 ```
 
 > 需要能連到 `www.104.com.tw` 與 `www.1111.com.tw`。受限網路（某些 CI／沙箱）會連不到。

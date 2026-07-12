@@ -3,13 +3,14 @@
 啟動：
     pip install -r requirements.txt
     python app.py
-    瀏覽器開 http://127.0.0.1:5000
+    瀏覽器開 http://127.0.0.1:8000
 """
 
 from __future__ import annotations
 
 import csv
 import io
+import os
 
 from flask import Flask, render_template, request, Response
 
@@ -156,4 +157,7 @@ def _to_int(value, default: int) -> int:
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # 預設 8000（macOS 的 port 5000 常被 AirPlay 接收器佔用）。
+    # 可用環境變數覆寫：PORT=9000 python app.py
+    port = int(os.environ.get("PORT", 8000))
+    app.run(debug=True, port=port)
