@@ -110,10 +110,50 @@ def _total_page(payload: dict) -> int | None:
     return None
 
 
+def _fmt_date(raw: str) -> str:
+    """104 的 appearDate 是 'YYYYMMDD'，轉成 'YYYY/MM/DD'。"""
+    raw = str(raw or "")
+    if len(raw) == 8 and raw.isdigit():
+        return f"{raw[0:4]}/{raw[4:6]}/{raw[6:8]}"
+    return raw
+
+
+def _salary_text_and_min(item: dict) -> tuple[str, int | None]:
+    """新版 API 用 salaryLow/salaryHigh（數字）表示薪資，沒有文字欄位。
+
+    回傳 (顯示文字, 可比較的月薪下限)。面議或時薪等無法比較者下限為 None。
+    """
+    desc = item.get("salaryDesc")
+    if desc:  # 舊版相容
+        return desc, _parse_min_salary(desc)
+
+    low = int(item.get("salaryLow") or 0)
+    high = int(item.get("salaryHigh") or 0)
+
+    if not low and not high:
+        return "待遇面議", None
+
+    # 數字 >= 1 萬視為月薪，較小的視為時薪／日薪（避免顯示成「月薪 176 元」）
+    unit = "月薪" if max(low, high) >= 10000 else "時薪/日薪"
+    if low and high and low != high:
+        text = f"{unit} {low:,}~{high:,}元"
+    elif low and high and low == high:
+        text = f"{unit} {low:,}元"
+    elif low:
+        text = f"{unit} {low:,}元以上"
+    else:
+        text = f"{unit} {high:,}元以下"
+
+    # 只有看起來像「月薪」（>= 1 萬）才拿來做最低薪資過濾，
+    # 時薪／日薪等小數字視為無法比較，一律保留。
+    salary_min = low if low >= 10000 else None
+    return text, salary_min
+
+
 def _extract_jobs(payload: dict) -> list[Job]:
     jobs: list[Job] = []
     for item in _job_list(payload):
-        salary_desc = item.get("salaryDesc", "") or ""
+        salary_text, salary_min = _salary_text_and_min(item)
         link = item.get("link", {}) or {}
         job_url = link.get("job", "") or ""
         if job_url.startswith("//"):
@@ -125,11 +165,11 @@ def _extract_jobs(payload: dict) -> list[Job]:
             Job(
                 title=item.get("jobName", ""),
                 company=item.get("custName", ""),
-                salary=salary_desc,
-                salary_min=_parse_min_salary(salary_desc),
+                salary=salary_text,
+                salary_min=salary_min,
                 location=item.get("jobAddrNoDesc", ""),
                 description=(item.get("description", "") or "").strip(),
-                date=item.get("appearDate", ""),
+                date=_fmt_date(item.get("appearDate", "")),
                 job_url=job_url,
                 company_url=cust_url,
                 source="104",
