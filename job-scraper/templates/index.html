@@ -41,8 +41,13 @@
 </head>
 <body>
   <header>
-    <h1>104 職缺自動查詢</h1>
-    <p>輸入條件即時抓取 104 人力銀行職缺，可匯出 CSV（Excel 可開）</p>
+    <h1>職缺自動查詢（104 + 1111）</h1>
+    <p>即時抓取多家人力銀行職缺，可匯出 CSV、追蹤歷史與薪資趨勢</p>
+    <nav style="margin-top:10px;font-size:14px">
+      <a href="/" style="color:#fff;margin-right:16px">🔍 查詢</a>
+      <a href="/history" style="color:#fff;opacity:.85;margin-right:16px">🗂 歷史</a>
+      <a href="/trends" style="color:#fff;opacity:.85">📈 薪資趨勢</a>
+    </nav>
   </header>
   <main>
     <form method="get" action="/">
@@ -66,6 +71,17 @@
         <label>抓取頁數</label>
         <input name="max_pages" type="number" min="1" max="10" value="{{ max_pages }}">
       </div>
+      <div class="field">
+        <label>來源</label>
+        <div style="display:flex;gap:10px;padding-top:6px">
+          {% for s in all_sources %}
+            <label style="font-size:14px;color:#1a1a1a">
+              <input type="checkbox" name="source" value="{{ s }}"
+                     {% if s in chosen_sources %}checked{% endif %}> {{ s }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
       <button type="submit">查詢</button>
     </form>
 
@@ -77,7 +93,7 @@
       <div class="meta">
         <span>找到 <strong>{{ jobs|length }}</strong> 筆「{{ keyword }}」職缺</span>
         {% if jobs %}
-          <a class="ghost" href="/export.csv?keyword={{ keyword|urlencode }}&area={{ area|urlencode }}&min_salary={{ min_salary }}&max_pages={{ max_pages }}">
+          <a class="ghost" href="/export.csv?keyword={{ keyword|urlencode }}&area={{ area|urlencode }}&min_salary={{ min_salary }}&max_pages={{ max_pages }}{% for s in chosen_sources %}&source={{ s }}{% endfor %}">
             <button class="ghost" type="button">⬇ 匯出 CSV</button>
           </a>
         {% endif %}
@@ -87,6 +103,7 @@
         <table>
           <thead>
             <tr>
+              <th>來源</th>
               <th>職缺 / 工作內容</th>
               <th>公司</th>
               <th>薪資</th>
@@ -97,6 +114,7 @@
           <tbody>
             {% for j in jobs %}
               <tr>
+                <td><span style="font-size:12px;color:#667;border:1px solid #dde;border-radius:4px;padding:1px 6px">{{ j.source }}</span></td>
                 <td>
                   <a href="{{ j.job_url }}" target="_blank" rel="noopener">{{ j.title }}</a>
                   {% if j.description %}<div class="desc">{{ j.description[:120] }}{% if j.description|length > 120 %}…{% endif %}</div>{% endif %}

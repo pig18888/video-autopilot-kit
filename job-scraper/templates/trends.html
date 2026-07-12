@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>薪資趨勢</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, "Noto Sans TC", sans-serif; background: #f5f6f8; color: #1a1a1a; }
+    header { background: #0066cc; color: #fff; padding: 20px 24px; }
+    header h1 { margin: 0; font-size: 20px; }
+    nav { margin-top: 10px; font-size: 14px; }
+    nav a { color: #fff; margin-right: 16px; }
+    main { max-width: 900px; margin: 0 auto; padding: 24px; }
+    form { margin-bottom: 16px; }
+    select, button { padding: 8px 10px; border: 1px solid #e2e5ea; border-radius: 6px; font-size: 14px; }
+    button { background: #0066cc; color: #fff; border: 0; cursor: pointer; }
+    .card { background: #fff; border: 1px solid #e2e5ea; border-radius: 10px; padding: 20px; }
+    h2 { font-size: 15px; color: #445; margin: 0 0 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>薪資趨勢</h1>
+    <nav>
+      <a href="/" style="opacity:.85">🔍 查詢</a>
+      <a href="/history" style="opacity:.85">🗂 歷史</a>
+      <a href="/trends">📈 薪資趨勢</a>
+    </nav>
+  </header>
+  <main>
+    <form method="get" action="/trends">
+      <select name="keyword" onchange="this.form.submit()">
+        <option value="">全部關鍵字</option>
+        {% for k in keywords %}
+          <option value="{{ k }}" {% if k == keyword %}selected{% endif %}>{{ k }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">查看</button>
+    </form>
+    <div class="card">
+      <h2>每日新職缺平均月薪下限{% if keyword %}（{{ keyword }}）{% endif %}</h2>
+      {{ svg|safe }}
+    </div>
+  </main>
+</body>
+</html>

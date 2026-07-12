@@ -50,6 +50,7 @@ class Job:
     date: str
     job_url: str
     company_url: str
+    source: str = "104"  # 來源網站：104 / 1111
 
     def as_dict(self) -> dict:
         return asdict(self)
@@ -113,6 +114,7 @@ def _extract_jobs(payload: dict) -> list[Job]:
                 date=item.get("appearDate", ""),
                 job_url=job_url,
                 company_url=cust_url,
+                source="104",
             )
         )
     return jobs
@@ -165,11 +167,11 @@ def search_104(
 
 
 def to_csv_rows(jobs: Iterable[Job]) -> list[list[str]]:
-    header = ["職缺", "公司", "薪資", "地區", "工作內容", "刊登日", "職缺連結"]
+    header = ["來源", "職缺", "公司", "薪資", "地區", "工作內容", "刊登日", "職缺連結"]
     rows = [header]
     for j in jobs:
         rows.append([
-            j.title, j.company, j.salary, j.location,
+            j.source, j.title, j.company, j.salary, j.location,
             j.description, j.date, j.job_url,
         ])
     return rows
