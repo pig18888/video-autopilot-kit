@@ -103,6 +103,18 @@ def _extract_jobs(payload: dict) -> list[Job]:
             company_name = company
 
         salary = str(_first(item, "salary", "salary_range", "salaryDesc"))
+
+        # Yourator 沒有 description 欄位，用技能標籤當摘要
+        desc = str(_first(item, "description", "snippet", "excerpt")).strip()
+        tags = item.get("tags")
+        if not desc and isinstance(tags, list):
+            desc = "、".join(str(t) for t in tags[:8])
+
+        # 日期欄位是 lastActiveAt（如「一天內更新」），沒有標準日期就用它
+        date = str(_first(item, "published_at", "updated_at", "date"))[:10]
+        if not date:
+            date = str(item.get("lastActiveAt") or "")
+
         jobs.append(
             Job(
                 title=_first(item, "name", "title", "jobName"),
@@ -110,8 +122,8 @@ def _extract_jobs(payload: dict) -> list[Job]:
                 salary=salary or "面議",
                 salary_min=_parse_salary(salary),
                 location=str(_first(item, "city", "location", "area")),
-                description=str(_first(item, "description", "snippet", "excerpt")).strip(),
-                date=str(_first(item, "published_at", "updated_at", "date"))[:10],
+                description=desc,
+                date=date,
                 job_url=_norm_url(str(_first(item, "path", "url", "link"))),
                 company_url=_norm_url(str(company_path)),
                 source="Yourator",
@@ -161,9 +173,12 @@ def search_yourator(
         time.sleep(delay)
 
     if area and area != "全部":
-        # "台北市" -> "台北"，用包含比對（Yourator 的 location 格式如「台北市大安區」或「台北」）
-        needle = area.rstrip("市縣")
-        results = [j for j in results if not j.location or needle in j.location]
+        # "台北市" -> "台北"，包含比對；Yourator 用「臺」（如「臺北市」），先正規化 臺->台
+        needle = area.rstrip("市縣").replace("臺", "台")
+        results = [
+            j for j in results
+            if not j.location or needle in j.location.replace("臺", "台")
+        ]
 
     if min_salary > 0:
         results = [j for j in results if j.salary_min is None or j.salary_min >= min_salary]

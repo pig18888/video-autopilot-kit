@@ -27,7 +27,7 @@ def index():
     area = request.args.get("area") or "全部"
     min_salary = _to_int(request.args.get("min_salary"), 0)
     max_pages = min(_to_int(request.args.get("max_pages"), 3), 10)
-    chosen = request.args.getlist("source") or ["104"]
+    chosen = request.args.getlist("source") or ["104", "Yourator"]
     job_type = request.args.get("job_type") or "不限"
 
     jobs = []
@@ -64,7 +64,7 @@ def export_csv():
     area = request.args.get("area") or "全部"
     min_salary = _to_int(request.args.get("min_salary"), 0)
     max_pages = min(_to_int(request.args.get("max_pages"), 3), 10)
-    chosen = request.args.getlist("source") or ["104"]
+    chosen = request.args.getlist("source") or ["104", "Yourator"]
     job_type = request.args.get("job_type") or "不限"
 
     if not keyword:
