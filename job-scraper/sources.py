@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from scraper import Job, search_104
 from scraper_1111 import search_1111
+from scraper_yourator import search_yourator
 
 SOURCES = {
     "104": search_104,
+    "Yourator": search_yourator,
     "1111": search_1111,
 }
 

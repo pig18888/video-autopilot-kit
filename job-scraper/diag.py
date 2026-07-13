@@ -108,8 +108,34 @@ def try_1111() -> None:
     print()
 
 
+def try_yourator() -> None:
+    print("=" * 60)
+    print("Yourator 端點測試")
+    print("=" * 60)
+    headers = {"User-Agent": UA, "Accept": "application/json",
+               "Referer": "https://www.yourator.co/jobs"}
+    url = "https://www.yourator.co/api/v4/jobs"
+    print(f"[Yourator] GET {url}?term[]=python&page=1")
+    try:
+        r = requests.get(url, params={"term[]": "python", "page": 1},
+                         headers=headers, timeout=15)
+        print(f"  status = {r.status_code}, content-type = {r.headers.get('content-type')}")
+        data = r.json()
+        print(f"  top-level keys = {list(data.keys()) if isinstance(data, dict) else type(data)}")
+        items = data.get("jobs") or data.get("data") or []
+        print(f"  職缺數 = {len(items)}")
+        if items:
+            import json as _json
+            print("  第一筆職缺內容：")
+            print(_json.dumps(items[0], ensure_ascii=False, indent=2)[:1500])
+    except Exception as exc:  # noqa: BLE001
+        print(f"  失敗: {exc}")
+    print()
+
+
 if __name__ == "__main__":
     print("requests version:", requests.__version__)
     try_104()
+    try_yourator()
     try_1111()
     print("診斷完成，請把以上完整輸出貼回。")
