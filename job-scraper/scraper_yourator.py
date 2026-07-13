@@ -80,7 +80,14 @@ def _norm_url(path: str) -> str:
     return BASE_URL + (path if path.startswith("/") else "/" + path)
 
 
+def _unwrap(data: dict) -> dict:
+    """Yourator 的回應包在 payload 這一層：{"payload": {"jobs": [...]}}。"""
+    inner = data.get("payload")
+    return inner if isinstance(inner, dict) else data
+
+
 def _extract_jobs(payload: dict) -> list[Job]:
+    payload = _unwrap(payload)
     items = payload.get("jobs") or payload.get("data") or []
     jobs: list[Job] = []
     for item in items:
@@ -148,7 +155,8 @@ def search_yourator(
             break
         results.extend(page_jobs)
 
-        if payload.get("has_more") is False:
+        inner = _unwrap(payload)
+        if inner.get("has_more") is False or inner.get("hasMore") is False:
             break
         time.sleep(delay)
 
