@@ -15,18 +15,40 @@ import requests
 
 SEARCH_API = "https://www.104.com.tw/jobs/search/api/jobs"
 
-# 常用地區代碼（104 area code）。可自行擴充。
+# 104 地區代碼（全台縣市）。
 AREA_CODES = {
     "全部": "",
     "台北市": "6001001000",
     "新北市": "6001002000",
-    "基隆市": "6001003000",
+    "宜蘭縣": "6001003000",
+    "基隆市": "6001004000",
     "桃園市": "6001005000",
-    "新竹市": "6001006000",
-    "新竹縣": "6001007000",
+    "新竹縣市": "6001006000",
+    "苗栗縣": "6001007000",
     "台中市": "6001008000",
+    "彰化縣": "6001010000",
+    "南投縣": "6001011000",
+    "雲林縣": "6001012000",
+    "嘉義縣市": "6001013000",
     "台南市": "6001014000",
     "高雄市": "6001016000",
+    "屏東縣": "6001018000",
+    "台東縣": "6001019000",
+    "花蓮縣": "6001020000",
+    "澎湖縣": "6001021000",
+    "金門縣": "6001022000",
+    "連江縣": "6001023000",
+}
+
+# 104 工作性質代碼（ro 參數）。
+JOB_TYPES = {
+    "不限": 0,
+    "全職": 1,
+    "兼職": 2,
+    "高階": 3,
+    "派遣": 4,
+    "接案": 5,
+    "家教": 6,
 }
 
 DEFAULT_HEADERS = {
@@ -78,9 +100,9 @@ def _parse_min_salary(salary_desc: str) -> int | None:
     return None
 
 
-def _build_params(keyword: str, area_code: str, page: int) -> dict:
+def _build_params(keyword: str, area_code: str, page: int, ro: int = 0) -> dict:
     return {
-        "ro": 0,          # 0=不限, 1=全職
+        "ro": ro,         # 工作性質，見 JOB_TYPES
         "kwop": 7,        # 關鍵字比對模式
         "keyword": keyword,
         "order": 15,      # 15=依日期排序（最新）
@@ -185,6 +207,7 @@ def search_104(
     max_pages: int = 3,
     delay: float = 0.6,
     session: requests.Session | None = None,
+    job_type: str = "不限",
 ) -> list[Job]:
     """搜尋 104 職缺。
 
@@ -192,16 +215,18 @@ def search_104(
     area       地區名稱，需為 AREA_CODES 的 key
     min_salary 最低月薪過濾（0 表示不過濾；面議/時薪一律保留）
     max_pages  最多抓幾頁（每頁約 20 筆）
+    job_type   工作性質，需為 JOB_TYPES 的 key（不限/全職/兼職…）
     """
     if not keyword.strip():
         raise ValueError("keyword 不可為空")
 
     area_code = AREA_CODES.get(area, "")
+    ro = JOB_TYPES.get(job_type, 0)
     sess = session or requests.Session()
     results: list[Job] = []
 
     for page in range(1, max_pages + 1):
-        params = _build_params(keyword, area_code, page)
+        params = _build_params(keyword, area_code, page, ro)
         resp = sess.get(SEARCH_API, params=params, headers=DEFAULT_HEADERS, timeout=15)
         resp.raise_for_status()
         payload = resp.json()

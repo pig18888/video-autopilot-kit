@@ -17,6 +17,7 @@ def search_all(
     min_salary: int = 0,
     max_pages: int = 3,
     sources: list[str] | None = None,
+    job_type: str = "不限",
 ) -> tuple[list[Job], dict[str, str]]:
     """同時查詢多個來源。
 
@@ -33,7 +34,7 @@ def search_all(
         if fn is None:
             continue
         try:
-            all_jobs.extend(fn(keyword, area, min_salary, max_pages=max_pages))
+            all_jobs.extend(fn(keyword, area, min_salary, max_pages=max_pages, job_type=job_type))
         except Exception as exc:  # noqa: BLE001 - 記錄後繼續
             errors[name] = str(exc)
 

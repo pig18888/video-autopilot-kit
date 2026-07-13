@@ -133,6 +133,7 @@ def search_1111(
     max_pages: int = 3,
     delay: float = 0.6,
     session: requests.Session | None = None,
+    job_type: str = "不限",
 ) -> list[Job]:
     """搜尋 1111 職缺。介面與 scraper.search_104 一致。
 

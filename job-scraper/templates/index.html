@@ -64,6 +64,14 @@
         </select>
       </div>
       <div class="field">
+        <label>工作性質</label>
+        <select name="job_type">
+          {% for t in job_types %}
+            <option value="{{ t }}" {% if t == job_type %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
         <label>最低月薪</label>
         <input name="min_salary" type="number" min="0" step="1000" value="{{ min_salary }}">
       </div>
@@ -93,7 +101,7 @@
       <div class="meta">
         <span>找到 <strong>{{ jobs|length }}</strong> 筆「{{ keyword }}」職缺</span>
         {% if jobs %}
-          <a class="ghost" href="/export.csv?keyword={{ keyword|urlencode }}&area={{ area|urlencode }}&min_salary={{ min_salary }}&max_pages={{ max_pages }}{% for s in chosen_sources %}&source={{ s }}{% endfor %}">
+          <a class="ghost" href="/export.csv?keyword={{ keyword|urlencode }}&area={{ area|urlencode }}&min_salary={{ min_salary }}&max_pages={{ max_pages }}&job_type={{ job_type|urlencode }}{% for s in chosen_sources %}&source={{ s }}{% endfor %}">
             <button class="ghost" type="button">⬇ 匯出 CSV</button>
           </a>
         {% endif %}

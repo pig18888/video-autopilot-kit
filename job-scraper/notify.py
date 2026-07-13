@@ -76,6 +76,7 @@ def run_once(dry_run: bool = False) -> None:
             min_salary=spec.get("min_salary", 0),
             max_pages=getattr(config, "MAX_PAGES", 3),
             sources=getattr(config, "SOURCES", None),
+            job_type=spec.get("job_type", "不限"),
         )
         for src, err in errors.items():
             print(f"[warn] {src} 查詢失敗：{err}")
