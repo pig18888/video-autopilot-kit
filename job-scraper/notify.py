@@ -24,7 +24,7 @@ from email.utils import formataddr
 
 from db import save_jobs
 from scraper import Job
-from sources import search_all
+from sources import search_multi_keywords
 
 try:
     import config
@@ -70,7 +70,7 @@ def run_once(dry_run: bool = False) -> None:
 
     for spec in config.SEARCHES:
         keyword = spec["keyword"]
-        jobs, errors = search_all(
+        jobs, errors = search_multi_keywords(
             keyword,
             area=spec.get("area", "全部"),
             min_salary=spec.get("min_salary", 0),

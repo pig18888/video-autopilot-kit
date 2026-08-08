@@ -51,8 +51,8 @@
   </header>
   <main>
     <form method="get" action="/">
-      <div class="field">
-        <label>關鍵字</label>
+      <div class="field" style="flex:1 1 260px">
+        <label>關鍵字（可用逗號分隔多個，如「AI、機器學習」會分別查詢再合併）</label>
         <input name="keyword" value="{{ keyword }}" placeholder="例如：python 後端" required>
       </div>
       <div class="field">
@@ -92,6 +92,17 @@
       </div>
       <button type="submit">查詢</button>
     </form>
+
+    <div style="margin-top:10px;font-size:13px;color:#667">
+      快速搜尋：
+      {% for name, preset_keyword in presets.items() %}
+        <a href="/?keyword={{ preset_keyword|urlencode }}&area={{ area|urlencode }}&job_type={{ job_type|urlencode }}&min_salary={{ min_salary }}&max_pages={{ max_pages }}{% for s in chosen_sources %}&source={{ s }}{% endfor %}"
+           style="display:inline-block;margin-right:8px;padding:4px 10px;border:1px solid var(--line);
+                  border-radius:14px;color:#0066cc;text-decoration:none;background:#fff">
+          🤖 {{ name }}
+        </a>
+      {% endfor %}
+    </div>
 
     {% if error %}
       <div class="error">{{ error }}</div>

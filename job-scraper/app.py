@@ -16,7 +16,7 @@ from flask import Flask, render_template, request, Response
 
 from db import get_history, list_keywords, salary_trend, save_jobs
 from scraper import AREA_CODES, JOB_TYPES, to_csv_rows
-from sources import SOURCES, search_all
+from sources import PRESETS, SOURCES, search_multi_keywords
 
 app = Flask(__name__)
 
@@ -34,8 +34,8 @@ def index():
     error = None
     if keyword:
         try:
-            jobs, errors = search_all(keyword, area, min_salary, max_pages,
-                                      sources=chosen, job_type=job_type)
+            jobs, errors = search_multi_keywords(keyword, area, min_salary, max_pages,
+                                                 sources=chosen, job_type=job_type)
             save_jobs(jobs, keyword)  # 存進 DB 做歷史追蹤
             if errors:
                 error = "部分來源查詢失敗：" + "；".join(f"{k}({v})" for k, v in errors.items())
@@ -47,6 +47,7 @@ def index():
         areas=list(AREA_CODES.keys()),
         job_types=list(JOB_TYPES.keys()),
         all_sources=list(SOURCES.keys()),
+        presets=PRESETS,
         chosen_sources=chosen,
         keyword=keyword,
         area=area,
@@ -70,8 +71,8 @@ def export_csv():
     if not keyword:
         return Response("缺少 keyword", status=400)
 
-    jobs, _ = search_all(keyword, area, min_salary, max_pages,
-                         sources=chosen, job_type=job_type)
+    jobs, _ = search_multi_keywords(keyword, area, min_salary, max_pages,
+                                    sources=chosen, job_type=job_type)
 
     buf = io.StringIO()
     buf.write("﻿")  # BOM，讓 Excel 正確辨識 UTF-8
